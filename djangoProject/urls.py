@@ -19,7 +19,7 @@ from rest_framework import routers
 from csc3170 import views
 routers=routers.DefaultRouter()
 routers.register(r"CreateUserGroup",views.UserAuthorization,"createuser")
-
+routers.register(r"login",views.login,"LOGIN")
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/",include(routers.urls))
