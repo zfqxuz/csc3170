@@ -1,0 +1,52 @@
+页面：
+主页：文本加三个用户组登陆按钮加注册按钮
+
+登陆页面：每个用户组各一个，输入用户名和密码，统一调用Login接口。调用结果返回对应主页，登陆失败页面或注册页面。
+
+注册：包含用户名，密码,用户组,姓名和身份证号（只能选择1和3，ug2不开放注册需要我们在数据库插入），统一调用create_account接口，调用返回登陆页面。
+
+ug1主页：包含“我的专利”，“我的申请”，“新增申请”，“登出”四个按钮。“我的专利”返回“ug1-现有”，“我的申请”连接到 “ug1-处理中” 界面。“新增申请”连接到“ug1-新增”界面，登出返回主页。
+
+ug1_现有:无参调用一次ug1_search,其中type参数为0。获取用户目前所有专利的pid。一个搜索框，可以输入pid来含参调用ug1_search（type=0）,返回一个pattent详情页面。
+
+pattent详情：多个文本框，将含参调用ug1_search的结果返回填入对应框（type=0）。一个按钮“修改专利所有人”，点击后弹出输入框，可以输入新的所有人的姓名，身份证号，所有人类型和公司。如果所有人类型为个人则公司不可填写。调用一次ug1_modify(type=0)，调用重定向至成功或失败页面。
+
+ug1处理中：无参调用一次ug1_search,其中type=1,获取该用户的全部申请的appid和status情况。一个搜索框，可以输入appid来含参调用ug1_search,返回一个app详情页面
+
+app详情：多个文本框，将含参调用ug1_search的结果返回填入对应框。两个按钮，一个‘修改申请’，点击后用户可以修改对应文本框的内容，按提交保存（调用一次ug1_modify,重定向至对应成功页面或者失败页面）；一个‘撤销申请’，点击调用ug1_delete，调用将重定向至ug1主页。
+
+app新增：多个文本框，用户可以填写文本框然后提交。调用ug1_insert,其中type=0，返回成功或失败页面。
+
+成功/失败页面：一行文字，显示对应成功或失败。手动增加返回对应ug主页的连接或自动重定向至对应ug主页。
+
+ug2主页：无参调用一次ug2_fetch,其中type=0，获取当前未完结的审批。一个搜索框，下面可以选择“新申请”或者“所有人变更”，可以输入appid来含参调用ug2_fetch（type=0/1,取决于输入的是“新申请”还是“所有人变更”）,返回process_app详情或者process_pattent页面。
+
+process_app详情：将ug2_fetch，type=1返回的结果呈现出来，下面有文本框：‘意见’，（‘原因’，‘数量’）*4。如果意见为False，那么同时需要填写至少一组原因和数量。原因和数量必须成对出现。否则，原因和数量为不可填写。调用ug2_modify,type=1,调用会重定向至对应成功或失败
+
+process_pattent：将ug2_fetch，type=0返回的结果呈现出来,ug2_find_people或者ug2_find_company的结果呈现出来。可以选择同意或拒绝，然后调用ug2_modify,type=0,调用会重定向至成功或失败页面。
+
+ug3主页：一个搜索框，可以输入公司id，调用ug3_search,返回对应页面。
+
+
+
+api文档：用于规范接口的传参。
+格式：统一为json
+接口名称	格式	
+Login		{"name":name,"pwd":password,#"ug":ug}	
+Create_account	{"name":name,"pwd":password,#"ug":ug}
+ug1_search	{'appid':appid,#"type":type,#"uid":uid,#"ug":ug}
+ug1_insert	{"pname":pname,"ename":ename,"txt":text,"lv1":lv1,"lv2":lv2,"lv3":lv3,#"uid":uid,#"ug":ug}
+ug1_modify	{"type":type,'pid':pid,'new_owner':new_owner,'otype':owner_type,'appid':appid,'field':[{"col1":val1},{"col2":val2},...],#"uid":uid,#"ug":ug}
+ug1_delete	{#"appid":appid,#"uid":uid,#"ug":ug}
+ug2_fetch	{"type":type,'pid':pid,'appid':appid,#"uid":uid,#"ug":ug}
+ug2_modify	{"type":type,'pid':pid,'appid':appid,"result":result,'why':[{"reason1":val1},{"reason2":val2},...],#"uid":uid,#"ug":ug}
+ug2_find_people	{"id":id,#"uid":uid,#"ug":ug}
+ug2_find_company{"cid":cid,#"uid":uid,#"ug":ug}
+ug3_search	{"compid"company_id,#"uid":uid,#"ug":ug}
+uid为用户id；name为用户名；pwd为用户密码；ug为用户组；appid为申请编号；pid为专利编号；type为discriminator可取0和1；ename为申请人姓名；pname为专利名；new_owner为变更的所有人id；otype为所有人类型（公司/个人）；field为一个包含多个key-value pair的列表，其中coli代表第i个填写的值，vali代表第i个值；why为一个包含多个key-value pair的列表，其中reasoni代表第i个原因，vali代表第i个数量；compid为公司id；id为自然人id。
+只有当type=0时,pid,new_owner,otype才不为空
+只有当type=1时，appid,field,why才不为空
+
+其中，""内的为参数名，''内为可为空的值,如果没有就用默认值。#后面的为非用户输入值，需要前端根据不同的页面自动传。
+
+
