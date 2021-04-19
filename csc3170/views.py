@@ -1,7 +1,9 @@
-import os
+from pickle import GET
+
 import pymysql
-import django.db
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
@@ -10,10 +12,11 @@ from django.db import connection,connections
 import smtplib
 # Create your views here
 
+
 class UserAuthorization(ViewSet):
     serializer=CreateUserSerizalizer
     def list(self,request):
-        return Response("POST,PUT")
+        return Response("msg:success")
 
     def post(self,request):
         if request.method=="POST":
@@ -44,31 +47,53 @@ class UserAuthorization(ViewSet):
                 cursor.close()
             return Response({"msg":"success"})
 
+
+
+
 class login(ViewSet):
     serializer=LoginSerizalizer
     def list(self,request):
-        return Response("post")
+        return Response({"msg:success"})
 
     def post(self,request):
+        print(request.method,"r1q")
         if request.method=="POST":
-            temp=JSONParser().parse(request)
-            name=temp.get("name")
-            ug=temp.get("ug")
-            pw=temp.get("pwd")
+            print(request.POST)
+
+            name=request.POST.getlist("name")[0]
+            ug=request.POST.getlist("ug")[0]
+            pw=(int)(request.POST.getlist("pwd")[0])
             with connection.cursor() as cursor:
                 rst=(cursor.execute(f"select pwd from ug{ug} where username='{name}'"))
                 if rst==1:
                     temp=(int) (cursor.fetchone()[0])
-
                     if temp==pw:
-                        return render(request,f"login{ug}.html",{'group':ug})
+                        print("thisisachived")
+                        j=render(request,f"page{ug}.html",{"ug":ug})
+                        j.set_cookie("bing","1145141919810")
+                        return j
                     else:
-                        return Response("wrong password or username")
+                        return render(request,"main.html")
                 else:
                     rst=cursor.execute(f"select * from mysql.user where User='{name}'")
                     if rst==1:
-                        return Response("wrong password or username")
+                        return render(request,"main.html")
                     else:
-                        return Response("Create an account")
-        return Response({"MSG":"SUCCESS"})
+                        return render(request,"main.html")
 
+def search(request):
+    if request.method==GET:
+        result=JSONParser().parse(request)
+        ug=result.get("ug")
+        uid=result.get("uid")
+        appid=result.get("appid")
+        with connection.cursor as cursor:
+            temp=cursor.execute(f"select * from application where uid={uid}")
+            result=temp.fetchall()
+            return render(request,"query1.html",{"list":result})
+
+
+def iambornforthis(request,id=1,paralist=None):
+    j=render(request,f"page{id}.html",paralist)
+
+    return HttpResponse({"MSG":"S"})#render(request=request,template_name=f'page{id}.html',context=paralist)

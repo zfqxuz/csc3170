@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <h1>this is test page for ug2 login</h1>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+    <script type="text/javascript">
+        function UserAction() {
+                var name=$("#name").val();
+                var pwd=$("#pwd").val();
+                $.ajax(
+                    {
+                        url:"http://127.0.0.1:8000/api/login/",
+                        dataType:"html",
+                        type:"POST",
+                        data:{
+                            name:name,
+                            pwd:pwd,
+                            ug:2
+                        },
+                        success:function (dta) {
+                            var new_page=window.open();
+                            new_page.document.write(dta);
+                            new_page.document.clear();
+                            self.window.close()
+                        },
+                        error:function (e){
+                            console.log(e.status);
+                            console.log(e.responseText);
+                        }
+                    }
+                );
+        }
+    </script>
+
+</head>
+<body>
+<label>
+    <input type="text" name="name" id="name">
+</label>enter your name<br>
+<label>
+    <input type="text" name="pwd" id="pwd">
+</label>enter your password<br>
+<button onclick="UserAction()">login</button>
+</body>
+</html>
