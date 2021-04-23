@@ -56,9 +56,9 @@ CREATE TABLE `application` (
   `uid` int NOT NULL,
   `ename` varchar(255) DEFAULT NULL,
   `pname` varchar(255) DEFAULT NULL,
-  `type_lv1` varchar(10) DEFAULT NULL,
-  `type_lv2` varchar(10) DEFAULT NULL,
-  `type_lv3` varchar(10) DEFAULT NULL,
+  `type_lv1` int DEFAULT NULL,
+  `type_lv2` int DEFAULT NULL,
+  `type_lv3` int DEFAULT NULL,
   `text` mediumblob,
   PRIMARY KEY (`app_id`),
   KEY `uid` (`uid`),
@@ -425,6 +425,10 @@ CREATE TABLE `pattent` (
   `owner_id` int DEFAULT NULL,
   `content` mediumblob,
   `owner_type` int DEFAULT NULL,
+  `type_lv1` int DEFAULT NULL,
+  `type_lv2` int DEFAULT NULL,
+  `type_lv3` int DEFAULT NULL,
+  `uid` int DEFAULT NULL,
   PRIMARY KEY (`pattent_id`),
   KEY `application_id` (`application_id`),
   CONSTRAINT `pattent_ibfk_1` FOREIGN KEY (`application_id`) REFERENCES `result` (`app_id`)
@@ -687,4 +691,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-04-16 20:03:57
+-- Dump completed on 2021-04-23 16:25:15
