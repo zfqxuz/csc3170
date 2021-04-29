@@ -2,9 +2,94 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Home</title>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+    <script type="text/javascript">
+        function ug1_main_to_my_p() {
+                $.ajax(
+                    {
+                        url:"http://127.0.0.1:8000/api/ug1_search_pattent/",
+                        dataType:"html",
+                        type:"POST",
+                        data:{
+                            uid:{{ uid }},
+                            app_type:0
+                        },
+                        success:function (dta) {
+                            var new_page=window.open();
+                            new_page.document.write(dta);
+                            new_page.document.clear();
+                            self.window.close();
+
+                        },
+                       error:function (e){
+                            console.log(e.status);
+                            console.log(e.responseText);
+                        }
+                    }
+                );
+        }
+        function ug1_main_to_my_app() {
+                $.ajax(
+                    {
+                        url:"http://127.0.0.1:8000/api/ug1_search_application/",
+                        dataType:"html",
+                        type:"POST",
+                        data:{
+                            uid:{{ uid }},
+
+                            ug:1
+                        },
+                        success:function (dta) {
+                            var new_page=window.open();
+                            new_page.document.write(dta);
+                            new_page.document.clear();
+                            self.window.close();
+
+                        },
+                       error:function (e){
+                            console.log(e.status);
+                            console.log(e.responseText);
+                        }
+                    }
+                );
+        }
+        function ug1_main_to_new_app() {
+                $.ajax(
+                    {
+                        url:"http://127.0.0.1:8000/api/ug1_new_application/",
+                        dataType:"html",
+                        type:"POST",
+                        data:{
+                            uid:{{ uid }}
+                        },
+                        success:function (dta) {
+                            var new_page=window.open();
+                            new_page.document.write(dta);
+                            new_page.document.clear();
+                            self.window.close();
+
+                        },
+                       error:function (e){
+                            console.log(e.status);
+                            console.log(e.responseText);
+                        }
+                    }
+                );
+        }
+    </script>
+
 </head>
 <body>
-<b>this is for ug1</b>
+
+<h1>Home Page For Applicant</h1>
+    <button onclick="ug1_main_to_my_p()">My pattent</button>
+
+    <button onclick="ug1_main_to_my_app()">My application</button>
+
+    <button onclick="ug1_main_to_new_app()">Create New application</button>
+
+    <p><a href="main.html"><button>Logout</button></a></p>
+
 </body>
 </html>

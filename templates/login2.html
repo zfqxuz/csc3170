@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <h1>this is test page for ug2 login</h1>
+    <title>Login</title>
+
     <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
     <script type="text/javascript">
         function UserAction() {
@@ -35,12 +36,17 @@
 
 </head>
 <body>
+    <h1>Official User Login</h1>
 <label>
     <input type="text" name="name" id="name">
 </label>enter your name<br>
 <label>
-    <input type="text" name="pwd" id="pwd">
+    <input type="password" name="pwd" id="pwd">
 </label>enter your password<br>
-<button onclick="UserAction()">login</button>
+<button onclick="UserAction()">login</button><br>
+
+    <a href="main.html">
+        <button >Back</button>
+    </a>
 </body>
 </html>

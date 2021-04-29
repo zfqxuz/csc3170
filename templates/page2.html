@@ -1,12 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <b>test ug parameter for ug2: ug={{ ug }}</b>
-    <b>if you see this, this meas access succcess</b>
+    <title>Home</title>
+
 </head>
 <body>
+<h1>Home Page For Official User</h1>
+    <data value="{{ uid }}" id="uid" ></data>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
 
+    <script type="text/javascript">
+        function enenaa(){
+            alert(window.location.protocol);
+        }
+        function showdetails(pid,type){
+            var uid=$("#uid").val();
+
+            if (pid===""){
+               $.ajax(
+                {
+                    url:"http://127.0.0.1:8000/api/ug2_fetch/",
+                    dataType:"json",
+                    type:"POST",
+                    data:{
+                        type:type,
+                        pid:"",
+                        appid:"",
+                        uid:uid
+
+                    },success:function (dta){
+                            var div=""
+                            div+="<tr>Application ID</tr>"
+                            for (let i = 0; i < dta.length; i++) {
+                                div+="<tr>";
+                                var aidi=dta[i][0];
+
+                                div=div+"<td><a target='_self' onclick='showdetails(" +aidi+","+type+ ")'>" + aidi+ "</a></td>"
+                                for(let j=1;j<dta[i].length;j++){
+                                    div=div+"<td>"+dta[i][j]+"</td>";
+                                }
+                                div+="</tr><br>";
+                            }
+
+                            $("#1145").html(div);
+                        }
+                    ,error:function (dta){
+                        alert(dta.responseText);
+                        alert("No in-process audition on this category now");
+                    }
+                }
+            )
+            }
+            else {
+                $.ajax(
+                    {
+                        url: "http://127.0.0.1:8000/api/ug2_fetch/",
+                        dataType: "html",
+                        type: "POST",
+                        data: {
+                            type: type,
+                            pid: pid,
+                            appid: pid,
+                            uid:uid
+
+                        }, success: function (dta) {
+                            var new_page=window.open();
+                            new_page.document.write(dta);
+                            new_page.document.clear();
+
+                        }
+                    }
+                )
+            }
+        }
+    </script>
+    <button onclick="showdetails('',1)" >check application for change owner</button>
+    <button onclick="showdetails('',0)" >check application for new patent</button>
+    <table id="1145"></table>
+<br>
+<a href="main.html">
+    <button>log-out</button>
+</a>
 </body>
 </html>
